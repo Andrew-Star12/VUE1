@@ -63,7 +63,7 @@ Vue.component('product', {
                     variantId: 2235,
                     variantColor: 'blue',
                     variantImage: "./assets/vmSocks-blue-onWhite.jpg",
-                    variantQuantity: 0,
+                    variantQuantity: 10,
                 }
             ],
             selectedVariant: 0,
@@ -278,16 +278,18 @@ Vue.component('cart', {
     },
     template: `
     <div class="cart">
-        <h2>Your Cart</h2>
-        <ul v-if="cart.length > 0">
-            <li v-for="(item, index) in cart" :key="index">
-                <img :src="item.image" :alt="item.color" width="50" height="50">
-                <p>{{ item.color }} Socks</p>
-                <button @click="removeFromCart(index)">Remove</button>
-            </li>
-        </ul>
-        <p v-else>Your cart is empty.</p>
-    </div>
+  <h2>Your Cart</h2>
+  <ul v-if="cart.length > 0">
+    <li v-for="(item, index) in cart" :key="index">
+      <img :src="item.image" :alt="item.color" width="220" height="100">
+      <div>
+        <p>{{ item.color }} Socks</p>
+        <button @click="removeFromCart(index)">Remove</button>
+      </div>
+    </li>
+  </ul>
+  <p v-else class="empty">Your cart is empty.</p>
+</div>
   `,
     methods: {
         removeFromCart(index) {

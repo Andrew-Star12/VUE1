@@ -97,17 +97,60 @@ textarea {
 
 .cart {
     position: fixed;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.5); /* Прозрачный фон для корзины */
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    padding: 10px 20px;
-    border-radius: 10px;
+    padding: 20px;
+    border-radius: 15px;
     font-size: 16px;
-    z-index: 1000; /* Чтобы корзина была поверх других элементов */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.cart h2 {
+    margin: 0;
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.cart ul {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.cart li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 10px;
+}
+
+.cart img {
+    margin-right: 50px;
+    border-radius: 5px;
+}
+
+.cart button {
+    background-color: #ff4747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
 .cart p {
-    margin: 0;
+    margin-top: 10px;
     font-size: 18px;
+    font-weight: 600;
+}
+
+.cart p.empty {
+    font-style: italic;
+    color: #bbb;
 }
