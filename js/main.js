@@ -17,7 +17,7 @@ Vue.component('product', {
         <p v-if="inStock">In stock</p>
         <p v-else :class="{ textOutOf: !inStock }">Out of Stock</p>
         <p>{{ sale }}</p>
-
+  
         <product-details :details="details"></product-details>
 
         <p>Shipping: {{ shipping }}</p>
@@ -41,12 +41,7 @@ Vue.component('product', {
         <button v-on:click="deleteToCart" :disabled="cart.length === 0">Delete</button>
         
         <br><br>
-        <product-tabs 
-          :reviews="reviews" 
-          :details="details"
-          :shippingCost="shipping"
-        ></product-tabs>
-        
+        <product-tabs :reviews="reviews"></product-tabs>
       </div>
     </div>
   `,
@@ -72,7 +67,7 @@ Vue.component('product', {
                 }
             ],
             selectedVariant: 0,
-            cart: 0,
+            cart: [], // Массив для хранения добавленных товаров
             reviews: []
         };
     },
@@ -91,7 +86,7 @@ Vue.component('product', {
             return variant.onSale ? `${this.brand} ${this.product} is on sale!` : `${this.brand} ${this.product} is not on sale`;
         },
         shipping() {
-            return this.premium ? "Free" : "$2.99";
+            return this.premium ? "Free" : 2.99;
         }
     },
     methods: {
@@ -99,14 +94,23 @@ Vue.component('product', {
             this.selectedVariant = index;
         },
         addToCart() {
-            this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+            const variant = this.variants[this.selectedVariant];
+            // Добавляем товар в корзину
+            this.cart.push({
+                id: variant.variantId,
+                color: variant.variantColor,
+                image: variant.variantImage
+            });
+            this.$emit('update-cart', this.cart); // Отправляем обновленный список в родительский компонент
         },
         deleteToCart() {
-            this.$emit('delete-to-cart');
-        }
+            // Удаляем последний элемент из корзины
+            this.cart.pop();
+            this.$emit('update-cart', this.cart); // Обновляем корзину в родительском компоненте
+        },
     },
     created() {
-        eventBus.$on('review-submitted', (productReview) => {
+        eventBus.$on('review-submitted', productReview => {
             this.reviews.push(productReview);
         });
     },
@@ -114,7 +118,6 @@ Vue.component('product', {
         eventBus.$off('review-submitted');
     }
 });
-
 
 
 
@@ -266,24 +269,47 @@ Vue.component('product-tabs', {
 });
 
 
+Vue.component('cart', {
+    props: {
+        cart: {
+            type: Array,
+            required: true
+        }
+    },
+    template: `
+    <div class="cart">
+        <h2>Your Cart</h2>
+        <ul v-if="cart.length > 0">
+            <li v-for="(item, index) in cart" :key="index">
+                <img :src="item.image" :alt="item.color" width="50" height="50">
+                <p>{{ item.color }} Socks</p>
+                <button @click="removeFromCart(index)">Remove</button>
+            </li>
+        </ul>
+        <p v-else>Your cart is empty.</p>
+    </div>
+  `,
+    methods: {
+        removeFromCart(index) {
+            this.cart.splice(index, 1); // Удаляем элемент из корзины
+            this.$emit('update-cart', this.cart); // Отправляем обновленную корзину родительскому компоненту
+        }
+    }
+});
+
+
 
 let app = new Vue({
     el: '#app',
     data: {
         premium: true,
-        cart: []
+        cart: [] // Здесь будет храниться корзина
     },
     methods: {
-        updateCart(id) {
-            this.cart.push(id);
-        },
-
-        deleteCart() {
-            if (this.cart.length > 0) {
-                this.cart.pop();
-            }
+        updateCart(newCart) {
+            this.cart = newCart; // Обновляем корзину
         }
-    }
+    },
 });
 
 
